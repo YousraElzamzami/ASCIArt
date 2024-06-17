@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            color: #0F0;
+            font-family: monospace;
+        }
+        #loadingCanvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #loadingText {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2em;
+            color: white;
+            font-family: monospace;
+        }
+        #startButton {
+            position: absolute;
+            top: 70%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #0F0;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+        #madeBy {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #0F0;
+            font-size: 14px;
+        }
+        #madeBy a {
+            color: #0F0;
+            text-decoration: none;
+        }
+        #madeBy a:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="loadingCanvas"></canvas>
+    <div id="loadingText">Loading...</div>
+    <button id="startButton" onclick="startApp()">Start</button>
+    <div id="madeBy">Made by <a href="https://www.linkedin.com/in/yousraelzamzami/" target="_blank">Yousra Elzamzami</a></div>
+    <script>
+        const canvas = document.getElementById('loadingCanvas');
+        const ctx = canvas.getContext('2d');
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        const fontSize = 14;
+        const columns = Math.floor(window.innerWidth / fontSize);
+        const rows = Math.floor(window.innerHeight / fontSize);
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let grid = Array.from({ length: columns }, () => Array(rows).fill(''));
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0, 0, 0, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = `${fontSize}px monospace`;
+
+            for (let i = 0; i < columns; i++) {
+                for (let j = 0; j < rows; j++) {
+                    if (Math.random() > 0.95) {
+                        grid[i][j] = letters[Math.floor(Math.random() * letters.length)];
+                    }
+                    ctx.fillText(grid[i][j], i * fontSize, j * fontSize);
+                }
+            }
+        }
+
+        function lightEffect(e) {
+            const x = Math.floor(e.clientX / fontSize);
+            const y = Math.floor(e.clientY / fontSize);
+            const radius = 3;  // Adjust this value to make the effect larger
+
+            draw();
+
+            for (let i = 0; i < columns; i++) {
+                for (let j = 0; j < rows; j++) {
+                    const dx = i - x;
+                    const dy = j - y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < radius) {
+                        ctx.fillStyle = 'rgba(255, 255, 255, 1)';
+                    } else {
+                        ctx.fillStyle = '#0F0';
+                    }
+                    ctx.fillText(grid[i][j], i * fontSize, j * fontSize);
+                }
+            }
+        }
+
+        window.addEventListener('mousemove', lightEffect);
+        setInterval(draw, 100);
+
+        function startApp() {
+            window.location.href = "index";
+        }
+    </script>
+</body>
+</html>

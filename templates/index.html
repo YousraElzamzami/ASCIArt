@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to ASCII Art</title>
+    <style>
+        /* Add your existing styles here */
+        #loadingScreen {
+            display: none; /* Hidden by default */
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999; /* Ensure it covers everything else */
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            padding-top: 20%;
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen">Loading...</div>
+    <h1>Upload an Image to Convert to ASCII Art</h1>
+    <input type="file" id="imageUpload" accept="image/*">
+    <button onclick="uploadImage()">Convert to ASCII</button>
+    <pre id="asciiArt"></pre>
+
+    <script>
+        function uploadImage() {
+            const input = document.getElementById('imageUpload');
+            const file = input.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            // Show loading screen
+            document.getElementById('loadingScreen').style.display = 'block';
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text())
+              .then(data => {
+                  document.getElementById('asciiArt').textContent = data;
+                  // Hide loading screen
+                  document.getElementById('loadingScreen').style.display = 'none';
+              }).catch(error => {
+                  console.error('Error:', error);
+                  // Hide loading screen
+                  document.getElementById('loadingScreen').style.display = 'none';
+              });
+        }
+    </script>
+</body>
+</html>
